@@ -1,3 +1,5 @@
+-- Creating a table for a clothing selling store 
+
 CREATE Table clothing (id INTEGER PRIMARY KEY, name Text, quantity integer, price INTEGER, color TEXT);
 INSERT INTO clothing VALUES (1, "skirt", 5,20, "pink");
 INSERT INTO clothing VALUES (2, "vest",7,18,"white" );
@@ -14,4 +16,9 @@ INSERT INTO clothing VALUES(12,"Shorts",6,20,"grey");
 INSERT INTO clothing VALUES(13,"suits",5,56,"blue");
 INSERT INTO clothing VALUES(14,"cargo shorts",7,35,"black");
 INSERT INTO clothing VALUES(15,"jersey",10,40,"grey");
+
+--Selecting the items with the highest prices 
 SELECT name FROM clothing WHERE price >20
+
+--Display the item on the store that are grey
+SELECT * FROM clothing WHERE color='grey'
