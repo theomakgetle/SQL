@@ -1,0 +1,17 @@
+CREATE Table clothing (id INTEGER PRIMARY KEY, name Text, quantity integer, price INTEGER, color TEXT);
+INSERT INTO clothing VALUES (1, "skirt", 5,20, "pink");
+INSERT INTO clothing VALUES (2, "vest",7,18,"white" );
+INSERT INTO clothing VALUES(3, "cargo pants",10,60,"brown");
+INSERT INTO clothing VALUES (4,"button down",8,35,"red");
+INSERT INTO clothing VALUES( 5,"socks",8,10,"blue");
+INSERT INTO clothing VALUES(6,"sports bras",9,26,"green");
+INSERT INTO clothing VALUES(7,"boxers",5,17,"orange");
+INSERT INTO clothing VALUES(8,"leggings",7,20,"black");
+INSERT INTO clothing VALUES(9,"t-shirts",6,40,"purple");
+INSERT INTO clothing VALUES(10,"dresses",2,10,"brown");
+INSERT INTO clothing VALUES(11,"swim suits",4,12,"yellow");
+INSERT INTO clothing VALUES(12,"Shorts",6,20,"grey");
+INSERT INTO clothing VALUES(13,"suits",5,56,"blue");
+INSERT INTO clothing VALUES(14,"cargo shorts",7,35,"black");
+INSERT INTO clothing VALUES(15,"jersey",10,40,"grey");
+SELECT name FROM clothing WHERE price >20
