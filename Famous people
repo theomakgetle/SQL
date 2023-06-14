@@ -1,0 +1,35 @@
+
+CREATE TABLE female_superstar(id INTEGER PRIMARY KEY,name TEXT,role TEXT);
+INSERT INTO female_superstar VALUES(1,'Melissa McCARTHY', 'Tammy');
+INSERT INTO female_superstar VALUES(2,'Sandra Bullock','The Proposal');
+INSERT INTO female_superstar VALUES(3,'Viola Davis','The Help');
+INSERT INTO female_superstar VALUES(4,'Emma Waston','Beauty and the Beast');
+INSERT INTO female_superstar VALUES(5,'Halle Berry','Cat Woman');
+INSERT INTO female_superstar VALUES(6,'Queen Latifah','Taxi');
+
+CREATE TABLE male_superstar(id INTEGER PRIMARY KEY,name TEXT,role TEXT);
+
+INSERT INTO male_superstar VALUES(1,'Tom Cruise','Top Gun:Maverick');
+INSERT INTO male_superstar VALUES(2,'Liam Neeson','Taken');
+INSERT INTO male_superstar VALUES(3,'Will Smith','Bad Boys');
+INSERT INTO male_superstar VALUES(4,'Keanu Reeves','John Wick');
+INSERT INTO male_superstar VALUES(5,'Jackie Chan','Rush Hour');
+INSERT INTO male_superstar VALUES(6,'Eddie Murphy','Shrek');
+
+CREATE TABLE partners(id INTEGER PRIMARY KEY,female_id INTEGER,male_id INTEGER);
+
+INSERT INTO partners VALUES(1,5,1);
+INSERT INTO partners VALUES(2,6,2);
+INSERT INTO partners VALUES(3,4,3);
+INSERT INTO partners VALUES(4,3,4);
+INSERT INTO partners VALUES(5,2,5);
+INSERT INTO partners VALUES(6,1,6);
+
+
+
+SELECT  partners.id, female_superstar.name, male_superstar.name FROM partners
+    JOIN male_superstar
+    ON male_superstar.id=partners.male_id
+    JOIN female_superstar   
+    ON female_superstar.id=partners.female_id;
+    
