@@ -1,0 +1,75 @@
+#For this project ,I download Spotify data from Kaggle
+#Then i created a table to insert Spotify data into
+#Finally ,I performed analytics on the the data using SQL
+
+CREATE TABLE BIT_DB.Spotifydata (
+id integer PRIMARY KEY,
+artist_name varchar NOT NULL,
+track_name varchar NOT NULL,
+track_id varchar NOT NULL,
+popularity integer NOT NULL,
+danceability decimal(4,3) NOT NULL,
+energy decimal(4,3) NOT NULL,
+song_key integer NOT NULL,
+loudness decimal(5,3) NOT NULL,
+song_mode integer NOT NULL,
+speechiness decimal(5,4) NOT NULL,
+acousticness decimal(6,5) NOT NULL,
+instrumentalness decimal(8,7) NOT NULL,
+liveness decimal(5,4) NOT NULL,
+valence decimal(4,3) NOT NULL,
+tempo decimal(6,3) NOT NULL,
+duration_ms integer NOT NULL,
+time_signature integer NOT NULL )
+
+
+#THEN I inserted the spotify data  CSV into table
+#Next i explored the data using the following SQL:
+
+
+# what are the top artist 30 artist according to popularity
+
+SELECT track_name,popularity FROM BIT_DB.Spotifydata
+GROUP BY artist_name
+ORDER BY popularity DESC
+LIMIT 30;
+
+# what are the top 10 artist based on porpularity
+
+SELECT track_name,artist_name, popularity FROM BIT_DB.Spotifydata
+GROUP BY artist_name
+ORDER BY popularity
+LIMIT 10
+
+# what are the max and min levels of energy
+
+SELECT distinct track_name, MAX(energy) AS max, MIN(energy) AS min FROM BIT_DB.Spotifydata
+
+
+# Who is the artist with the most danceable songs and whats the average danceability?
+
+SELECT artist_name, avg(danceability) FROM BIT_DB.Spotifydata
+GROUP BY artist_name
+ORDER BY popularity DESC
+LIMIT 1;
+
+#  how many songs contain the word broke in their name?
+
+SELECT track_name, count(track_name) FROM BIT_DB.Spotifydata
+WHERE track_name LIKE '%broke%';
+
+# Average  duration of songs by artist
+
+SELECT artist_name , ROUND(avg(duration_ms)) AS avg_duration FROM BIT_DB.Spotifydata
+GROUP BY artist_name
+
+# what are the songs that have at least a danceability of 0.500 or energy level of 0.400
+
+SELECT track_name FROM BIT_DB.Spotifydata
+WHERE danceability >0.499
+OR energy >0.399;
+
+#. What songs were featured and what was their popularity?
+
+SELECT track_name, popularity FROM BIT_DB.Spotifydata
+WHERE track_name LIKE '%feat%';
