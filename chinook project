@@ -1,0 +1,75 @@
+PRACTICE DATA FROM OLINE MUSIC STORE:
+
+
+#which sale agent made more money in 2009
+
+SELECT emp.FirstName, emp.LastName,
+ROUND(SUM(Inv.Total), 2) as 'Total Sales' 
+FROM chinook.Employees emp
+
+JOIN chinook.Customers cust 
+ON cust.SupportRepId = emp.EmployeeId
+
+JOIN chinook.Invoices Inv 
+ON Inv.CustomerId = cust.CustomerId
+
+WHERE emp.Title = 'Sales Support Agent' 
+AND Inv.InvoiceDate LIKE '2009%' 
+GROUP BY emp.FirstName
+ORDER BY (round(sum(Inv.Total), 2))  DESC LIMIT 1;
+
+# All customers from brazil
+
+SELECT *
+FROM customers
+WHERE country = 'Brazil'
+
+
+#query that includes the purchased track name and artist namewith each invoice line id 
+
+SELECT T.name,I.invoicelineid
+FROM invoice_items I
+inner Join  Tracks T
+ON I.Trackid=T.trackid
+ORDER by invoicelineid 
+
+
+#customers firstname, last name ,country who are not in us
+
+SELECT firstname,lastname ,country
+FROM customers
+WHERE country<>'USA';
+
+#total sales for 2009
+
+SELECT SUM(Total)
+FROM Invoices
+WHERE Invoicedate<> '%2009%';
+
+
+# Provide a query that shows the invoices associated with each sales agent.
+
+SELECT I.InvoiceID, E.FirstName, E. LastName, E.Title
+FROM employees E
+Inner Join customers C
+On E.EmployeeID=C.SupportRepID
+Inner Join Invoices I
+On I.customerID=C.CustomerID
+Order By I.InvoiceID
+
+ #Show the total sales made by each sales agent.
+ 
+Select E.FirstName, E.LastName, Round(SUM(I.Total),2) as "Total Sales"
+From Invoices I
+Join Customers C
+On I.invoiceid=C.customerid
+Join Employees E
+On C.SupportRepID=E.Employeeid
+Where E.Title = "Sales Support Agent"
+Group By E. FirstNAME
+
+
+# Distinct list of billing countries from the Invoice table
+SELECT 
+    DISTINCT(BillingCountry) 
+FROM invoices;
