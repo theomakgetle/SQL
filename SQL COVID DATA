@@ -1,0 +1,147 @@
+SELECT *
+FROM [Portfolio project].dbo.CovidDeaths
+where continent is not null
+ORDER BY  3,4
+
+
+--SELECT *
+--FROM [Portfolio project].dbo.CovidVaccinations
+--ORDER BY 3,4
+
+
+
+SELECT location,date ,total_cases,total_deaths,population
+FROM [Portfolio project].dbo.CovidDeaths
+ORDER BY 1,2
+
+-- TOTAL CASES VS TOTAL DEATHS
+--SHOWS LIKELIHOOD OF DYING IF YOU CONTRACT COVID IN YOUR COUNTRY
+
+SELECT location,date ,total_cases,total_deaths,(total_deaths/total_cases)*100 as DeathPercentage
+FROM [Portfolio project].dbo.CovidDeaths
+Where location like '%state%'
+ORDER BY 1,2
+
+
+--TOTAL CASES VS POPULATION
+--SHOWS WHAT PERCENTAGE OF POPULATION GOT COVID
+
+SELECT location,date, population, total_cases,(total_cases/population)*100 as DeathPercentage
+FROM [Portfolio project].[dbo].[CovidDeaths]
+Where location like '%state%'
+ORDER BY 1,2
+
+
+--COUNTRIES WITH HIGHEST INFECTION RATES  COMPARED TO POPULATIONS
+
+SELECT location, population, MAX(total_cases) as HighestInfectionCount,MAX ((total_cases/population))*100 as PercentPopulationInfected
+FROM [Portfolio project].[dbo].[CovidDeaths]
+--Where location like '%states%'
+Group by location,population
+ORDER BY PercentPopulationInfected DESC
+
+--COUNTRIES WITH THE HIGHEST DEATH PER POPULATION
+
+
+SELECT location, MAX(cast(total_deaths as int)) as TotalDeathCount
+FROM [Portfolio project].[dbo].[CovidDeaths]
+--Where location like '%states%'
+where continent is not null
+Group by location
+ORDER BY TOtalDeathCount DESC
+
+--BREAK DOWN BY CONTINENT
+
+
+SELECT continent, MAX(cast(total_deaths as int)) as TotalDeathCount
+FROM [Portfolio project].[dbo].[CovidDeaths]
+--Where location like '%states%'
+where continent is not null
+Group by continent
+ORDER BY TOtalDeathCount DESC
+
+
+--CONTINENTS WITH HIGHEST DEATH COUNT PER POPULATION
+
+
+SELECT continent, MAX(cast(total_deaths as int)) as TotalDeathCount
+FROM [Portfolio project].[dbo].[CovidDeaths]
+--Where location like '%states%'
+where continent is not null
+Group by continent
+ORDER BY TOtalDeathCount DESC
+
+
+
+--GLOBAL NUMBERS
+
+SELECT SUM(new_cases)as total_cases,SUM(cast(new_deaths as int))as total_deaths,SUM(cast(new_deaths as int))/SUM
+(new_cases)* 100 as DeathPercentage
+FROM [Portfolio project].[dbo].[CovidDeaths]
+--Where location like '%state%'
+where continent is not null
+Group by date
+ORDER BY 1,2
+
+-- TOTAL POPULATION VS VACCINATIONS
+--USE CTE
+WITH popvsvac (continent,location,date,population,new_Vaccinations, RollingpeopleVaccinated)
+as
+(
+Select dea.continent, dea.location,dea.date,dea.population,vac.new_vaccinations
+,SUM(CONVERT(int,vac.new_vaccinations )) OVER (Partition by dea.location order by dea.location,
+dea.date) as RollingpeopleVaccinated
+--,(RollingpeopeleVaccinated/population)*100
+FROM [Portfolio project].dbo.CovidDeaths dea
+Join [Portfolio project].dbo.CovidVaccinations vac
+		on dea.location =vac.location
+		and dea.date= vac.date
+		where dea.continent is not null
+		--order by 2,3
+)		
+select *,(RollingpeopleVaccinated/population)*100
+from popvsvac
+
+-- TEMP TABLE
+DROP TABLE IF exists #PercentpopulationVaccinated
+CREATE TABLE #PercentpopulationVaccinated
+(
+Continent nvarchar(255),
+Location nvarchar(255),
+Date datetime,
+population numeric,
+New_vaccination numeric,
+RollingpeopleVaccinated numeric
+)
+Insert into #PercentpopulationVaccinated 
+SELECT dea.continent, dea.location,dea.date,dea.population,vac.new_vaccinations
+,SUM(CONVERT(int,vac.new_vaccinations )) OVER (Partition by dea.location order by dea.location,
+dea.date) as RollingpeopleVaccinated
+--,(RollingpeopeleVaccinated/population)*100
+FROM [Portfolio project].dbo.CovidDeaths dea
+Join [Portfolio project].dbo.CovidVaccinations vac
+		on dea.location= vac.location
+		and dea.date= vac.date
+		--where dea.continent is not null
+		--order by 2,3
+select *,(RollingpeopleVaccinated/population)*100
+from #PercentpopulationVaccinated
+
+
+--CREATING VIEW TO STORE DATA FOR LATER VISUALIZATION
+
+CREATE VIEW PercentpopulationVaccinated as
+SELECT dea.continent, dea.location,dea.date,dea.population,vac.new_vaccinations
+,SUM(CONVERT(int,vac.new_vaccinations )) OVER (Partition by dea.location order by dea.location,
+dea.date) as RollingpeopleVaccinated
+--,(RollingpeopeleVaccinated/population)*100
+FROM [Portfolio project].dbo.CovidDeaths dea
+Join [Portfolio project].dbo.CovidVaccinations vac
+		on dea.location= vac.location
+		and dea.date= vac.date
+		where dea.continent is not null
+		--order by 2,3
+
+
+		SELECT *
+		FROM PercentpopulationVaccinated 
