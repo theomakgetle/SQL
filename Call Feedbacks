@@ -1,0 +1,188 @@
+--1.---  Average Ratings by Representative--
+
+--SELECT Representative, AVG(Average) AS AverageRating
+--FROM dbo.CallFeedback
+--GROUP BY Representative
+--ORDER BY AverageRating DESC;
+
+--2-- Average Ratings Over Time ---
+
+--SELECT Date, AVG(Average) AS AverageRating
+--FROM dbo.CallFeedback
+--GROUP BY Date
+--ORDER BY Date;
+
+--3--- Distribution of Call Types-------------
+
+--SELECT TypeOfCall, COUNT(*) AS CallCount
+--FROM dbo.CallFeedback
+--GROUP BY TypeOfCall;
+
+
+--4---Ratings Breakdown by Communication and Problem Solving---
+
+--SELECT Representative, AVG(Communication) AS AvgCommunication, AVG(ProblemSolving) AS AvgProblemSolving
+--FROM dbo.CallFeedback
+--GROUP BY Representative
+--ORDER BY Representative;
+
+
+--5--- Distribution of Positions---
+
+--SELECT Position, COUNT(*) AS RepresentativeCount
+--FROM dbo.CallFeedback
+--GROUP BY Position;
+
+
+
+--6---Distribution of Ratings by Call Type-----
+
+--SELECT TypeOfCall, AVG(Average) AS AverageRating
+--FROM dbo.CallFeedback
+--GROUP BY TypeOfCall;
+
+--7----Ratings Heatmap by Representatives and Call Types----
+
+--SELECT Representative, TypeOfCall, AVG(Average) AS AverageRating
+--FROM dbo.CallFeedback
+--GROUP BY Representative, TypeOfCall;
+
+
+--8--- the distribution of ratings by position
+
+--SELECT
+--    Position,
+--    COUNT(*) AS TotalFeedback,
+--    AVG(Communication) AS AvgCommunication,
+--    AVG(ProblemSolving) AS AvgProblemSolving,
+--    AVG(AttentionToDetail) AS AvgAttentionToDetail,
+--    AVG(FollowingInstructions) AS AvgFollowingInstructions,
+--    AVG(Average) AS AvgOverall
+--FROM
+--    dbo.CallFeedback
+--GROUP BY
+--    Position
+--ORDER BY
+--    Position;
+
+
+
+--9---- Distribution of Ratings and Feedback Details by Position
+--*/This query provides a detailed distribution of ratings and feedback details 
+--   for each position 
+
+--WITH RatingCounts AS (
+--    SELECT
+--        Position,
+--        COUNT(*) AS TotalFeedback,
+--        COUNT(Communication) AS CountCommunication,
+--        COUNT(ProblemSolving) AS CountProblemSolving,
+--        COUNT(AttentionToDetail) AS CountAttentionToDetail,
+--        COUNT(FollowingInstructions) AS CountFollowingInstructions,
+--        COUNT(Average) AS CountOverall
+--    FROM
+--        dbo.CallFeedback
+--    GROUP BY
+--        Position
+--)
+
+--SELECT
+--    cf.Date,
+--    cf.Representative,
+--    cf.ClientName,
+--    cf.Position,
+--    cf.Company,
+--    cf.TypeOfCall,
+--    rc.TotalFeedback,
+--    rc.CountCommunication,
+--    rc.CountProblemSolving,
+--    rc.CountAttentionToDetail,
+--    rc.CountFollowingInstructions,
+--    rc.CountOverall,
+--    AVG(cf.Communication) AS AvgCommunication,
+--    AVG(cf.ProblemSolving) AS AvgProblemSolving,
+--    AVG(cf.AttentionToDetail) AS AvgAttentionToDetail,
+--    AVG(cf.FollowingInstructions) AS AvgFollowingInstructions,
+--    AVG(cf.Average) AS AvgOverall
+--FROM
+--    dbo.CallFeedback cf
+--JOIN
+--    RatingCounts rc ON cf.Position = rc.Position
+--GROUP BY
+--    cf.Date,
+--    cf.Representative,
+--    cf.ClientName,
+--    cf.Position,
+--    cf.Company,
+--    cf.TypeOfCall,
+--    rc.TotalFeedback,
+--    rc.CountCommunication,
+--    rc.CountProblemSolving,
+--    rc.CountAttentionToDetail,
+--    rc.CountFollowingInstructions,
+--    rc.CountOverall
+--ORDER BY
+--    cf.Position, cf.Date;
+   
+
+--10---/*
+--   Representatives with Decreased Ratings Analysis
+   
+   
+
+--SELECT
+--    cf.Date,
+--    cf.Representative,
+--    cf.Position,
+--    cf.Company,
+--    cf.TypeOfCall,
+--    cf.Average AS CurrentOverall,
+--    pf.PrevAvgOverall,
+--    cf.Average - pf.PrevAvgOverall AS ChangeInOverall
+--FROM
+--    dbo.CallFeedback cf
+--JOIN (
+--    SELECT
+--        Representative,
+--        Position,
+--        AVG(Average) AS PrevAvgOverall
+--    FROM
+--        dbo.CallFeedback
+--    WHERE
+--        Date < GETDATE()
+--    GROUP BY
+--        Representative, Position
+--) pf ON cf.Representative = pf.Representative AND cf.Position = pf.Position
+--WHERE
+--    cf.Date = (SELECT MAX(Date) FROM dbo.CallFeedback WHERE Representative = cf.Representative AND Position = cf.Position)
+--    AND cf.Average < pf.PrevAvgOverall;
+
+
+--11-- Representatives with Increased Ratings Analysis---
+
+--SELECT
+--    cf.Date,
+--    cf.Representative,
+--    cf.Position,
+--    cf.Company,
+--    cf.TypeOfCall,
+--    cf.Average AS CurrentOverall,
+--    pf.PrevAvgOverall,
+--    cf.Average - pf.PrevAvgOverall AS ChangeInOverall
+--FROM
+--    dbo.CallFeedback cf
+--JOIN (
+--    SELECT
+--        Representative,
+--        Position,
+--        AVG(Average) AS PrevAvgOverall
+--    FROM
+--        dbo.CallFeedback
+--    WHERE
+--        Date < GETDATE()
+--    GROUP BY
+--        Representative, Position
+--) pf ON cf.Representative = pf.Representative AND cf.Position = pf.Position
+--WHERE
+--    cf.Date = (SELECT MAX(Date) FROM dbo.CallFeedback WHERE Representative = cf.Representative AND Position = cf.Position)
+--    AND cf.Average > pf.PrevAvgOverall;
