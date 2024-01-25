@@ -1,0 +1,101 @@
+DATASETS SOURCE:https://www.kaggle.com/datasets/andrewmvd/autism-screening-on-adults?resource=download
+
+
+
+----1 Count of ASD Diagnosis by Gender----
+
+--SELECT gender, COUNT(*) as count
+--FROM ASD_Diagnosis
+--GROUP BY gender;
+
+
+----2 Average Age of Individuals with ASD Diagnosis-----
+
+--SELECT AVG(age) as average_age
+--FROM ASD_Diagnosis
+--WHERE Class_ASD = 'YES';
+
+
+-----3  Average Result by Ethnicity----
+
+--SELECT ethnicity, AVG(result) as average_result
+--FROM ASD_Diagnosis
+--GROUP BY ethnicity;
+
+-----4 Cases with Autism (Austim) by Country----
+
+--SELECT country_of_res, COUNT(*) as count
+--FROM ASD_Diagnosis
+--WHERE austim = 'yes'
+--GROUP BY country_of_res;
+
+-----5 Average Age by Diagnosis Class (ASD)---
+
+--SELECT Class_ASD, AVG(age) as average_age
+--FROM ASD_Diagnosis
+--GROUP BY Class_ASD;
+
+----6---Distribution of Result---
+
+--SELECT result, COUNT(*) as count
+--FROM ASD_Diagnosis
+--GROUP BY result;
+
+-----7 Cases with Jundice by Age Group----
+
+
+--SELECT age_desc, COUNT(*) as count
+--FROM ASD_Diagnosis
+--WHERE jundice = 'yes'
+--GROUP BY age_desc;
+
+----8 Distribution of ASD Diagnosis by Autism History---
+
+--SELECT 
+--  austim,
+--  COUNT(*) as count
+--FROM ASD_Diagnosis
+--GROUP BY austim;
+
+----9 Percentage of ASD Diagnosis by Country----
+
+--WITH DiagnosisPercentage AS (
+--  SELECT 
+--    country_of_res,
+--    ROW_NUMBER() OVER (ORDER BY country_of_res) as row_number,
+--    COUNT(*) OVER () as total_diagnoses,
+--    COUNT(*) OVER (PARTITION BY country_of_res) as country_diagnoses
+--  FROM ASD_Diagnosis
+--)
+--SELECT 
+--  row_number,
+--  country_of_res,
+--  country_diagnoses * 100.0 / total_diagnoses as percentage
+--FROM DiagnosisPercentage
+
+
+-----10 CountryAverageAgeInRange---
+
+--WITH CountryAverageAge AS (
+--  SELECT
+--    country_of_res,
+--    AVG(age) AS avg_age
+--  FROM ASD_Diagnosis
+--  GROUP BY country_of_res
+--)
+--SELECT
+--  country_of_res,
+--  AVG(avg_age) AS overall_avg_age
+--FROM CountryAverageAge
+--GROUP BY country_of_res
+--HAVING AVG(avg_age) BETWEEN 25 AND 35;
+
+
+--11---CustomAnalysisQuery---
+
+
+--SELECT *
+--FROM ASD_Diagnosis
+--WHERE age BETWEEN 25 AND 35
+--   OR (gender = 'f' AND result >= 7)
+--   OR (ethnicity = 'White-European' AND country_of_res = 'United States');
